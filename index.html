@@ -1,20 +1,35 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Redirecting…</title>
-    <script>
-      // Get the path after "/link"
-      const path = window.location.pathname.replace(/^\/link/, "");
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Redirecting…</title>
+</head>
+<body>
+  <p>Redirecting…</p>
+  <script>
+    // Get the full path after "/link"
+    const path = window.location.pathname.replace(/^\/link/, "");
+    const query = window.location.search;
 
-      // Build the deeplink
-      const deepLink = "elandcloud://" + path;
+    // iOS deeplink
+    const iosURL = `elandcloud://${path}${query}`;
 
-      // Redirect
-      window.location.replace(deepLink);
-    </script>
-  </head>
-  <body>
-    Redirecting…
-  </body>
+    // Android intent URL
+    // Replace "com.yourcompany.yourapp" with your actual Android package name
+    const androidPackage = "com.elandgames.elandcloud";
+    const fallbackURL = `https://elandcloudapp.github.io/link${path}${query}`; // Web fallback
+    const androidURL = `intent://${path}${query}#Intent;scheme=elandcloud;package=${androidPackage};S.browser_fallback_url=${encodeURIComponent(fallbackURL)};end`;
+
+    // Detect Android
+    const isAndroid = /Android/i.test(navigator.userAgent);
+
+    // Redirect
+    window.location.href = isAndroid ? androidURL : iosURL;
+
+    // Fallback for devices that do not handle the deeplink
+    setTimeout(() => {
+      window.location.href = fallbackURL;
+    }, 2500);
+  </script>
+</body>
 </html>
