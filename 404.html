@@ -1,20 +1,29 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Redirecting…</title>
-    <script>
-      // Get the full path after "/link"
-      const path = window.location.pathname.replace(/^\/link/, "");
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Redirecting…</title>
+</head>
+<body>
+  <script>
+    // Get full path after "/link"
+    const path = window.location.pathname.replace(/^\/link/, "");
+    
+    // Preserve query string if present
+    const query = window.location.search;
 
-      // Build the deeplink
-      const deepLink = "elandcloud://" + path;
+    // Build URLs
+    const nativeURL = `myapp://${path}${query}`;        // Deeplink
+    const fallbackURL = `https://example.com${path}${query}`; // Web fallback
 
-      // Redirect
-      window.location.replace(deepLink);
-    </script>
-  </head>
-  <body>
-    Redirecting…
-  </body>
+    // Redirect to deeplink immediately
+    window.location.href = nativeURL;
+
+    // Fallback to web URL after 3 seconds
+    setTimeout(() => {
+      window.location.href = fallbackURL;
+    }, 3000);
+  </script>
+  <p>Redirecting…</p>
+</body>
 </html>
