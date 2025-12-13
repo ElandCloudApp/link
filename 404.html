@@ -13,8 +13,8 @@
     const query = window.location.search;
 
     // Build URLs
-    const nativeURL = `myapp://${path}${query}`;        // Deeplink
-    const fallbackURL = `https://example.com${path}${query}`; // Web fallback
+    const nativeURL = `elandcloud://${path}${query}`;        // Deeplink
+    const fallbackURL = `elandcloud://${path}${query}`; // Web fallback
 
     // Redirect to deeplink immediately
     window.location.href = nativeURL;
@@ -22,7 +22,7 @@
     // Fallback to web URL after 3 seconds
     setTimeout(() => {
       window.location.href = fallbackURL;
-    }, 3000);
+    }, 2000);
   </script>
   <p>Redirecting…</p>
 </body>
