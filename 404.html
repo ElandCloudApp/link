@@ -6,23 +6,25 @@
 </head>
 <body>
   <script>
-    // Get full path after "/link"
-    const path = window.location.pathname.replace(/^\/link/, "");
-    
-    // Preserve query string if present
-    const query = window.location.search;
+   const path = window.location.pathname.replace(/^\/link/, "");
+const query = window.location.search;
 
-    // Build URLs
-    const nativeURL = `elandcloud://${path}${query}`;        // Deeplink
-    const fallbackURL = `elandcloud://${path}${query}`; // Web fallback
+// iOS deeplink
+const iosURL = `elandcloud://${path}${query}`;
 
-    // Redirect to deeplink immediately
-    window.location.href = nativeURL;
+// Android intent URL
+const androidURL = `intent://${path}${query}#Intent;scheme=elandcloud;package=com.elandgames.elandcloud;end`;
 
-    // Fallback to web URL after 3 seconds
-    setTimeout(() => {
-      window.location.href = fallbackURL;
-    }, 2000);
+// Detect Android
+const isAndroid = /Android/i.test(navigator.userAgent);
+
+// Redirect
+window.location.href = isAndroid ? androidURL : iosURL;
+
+// Fallback to web after 2-3 seconds
+setTimeout(() => {
+  window.location.href = `elandcloud://${path}${query}`;
+}, 2000);
   </script>
   <p>Redirecting…</p>
 </body>
