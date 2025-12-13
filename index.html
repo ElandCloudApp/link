@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting…</title>
+    <script>
+      // Get the path after the repo name
+      const path = window.location.pathname
+        .replace(/^\/[^/]+/, ""); // removes "/project"
+
+      // Build deeplink
+      const deepLink = "elandcloud://" + path;
+
+      // Redirect
+      window.location.replace(deepLink);
+    </script>
+  </head>
+  <body>
+    Redirecting…
+  </body>
+</html>
