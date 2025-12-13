@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting…</title>
+    <script>
+      // Get the full path after "/link"
+      const path = window.location.pathname.replace(/^\/link/, "");
+
+      // Build the deeplink
+      const deepLink = "elandcloud://" + path;
+
+      // Redirect
+      window.location.replace(deepLink);
+    </script>
+  </head>
+  <body>
+    Redirecting…
+  </body>
+</html>
