@@ -2,34 +2,105 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Redirecting…</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: #f2f2f2;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    p {
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .deep-link-button {
+      font-size: 5vw;
+      padding: 2rem 4rem;
+      min-width: 220px;
+      min-height: 90px;
+      border-radius: 1rem;
+      border: none;
+      background: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+
+    .deep-link-button:hover {
+      background: #45a049;
+    }
+
+    .os-info {
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: #666;
+    }
+  </style>
 </head>
 <body>
-  <p>Redirecting…</p>
+
+  <p>Opening ElandCloud…</p>
+  <button class="deep-link-button" id="openBtn">Open App</button>
+  <div class="os-info" id="osInfo"></div>
+
   <script>
-    // Get the full path after "/link"
+    // Path + query
     const path = window.location.pathname.replace(/^\/link/, "");
     const query = window.location.search;
 
-    // iOS deeplink
+    // URLs
     const iosURL = `elandcloud://${path}${query}`;
-
-    // Android intent URL
-    // Replace "com.yourcompany.yourapp" with your actual Android package name
     const androidPackage = "com.elandgames.elandcloud";
-    const fallbackURL = `https://elandcloudapp.github.io/link${path}${query}`; // Web fallback
-    const androidURL = `intent://${path}${query}#Intent;scheme=elandcloud;package=${androidPackage};S.browser_fallback_url=${encodeURIComponent(fallbackURL)};end`;
+    const fallbackURL = `https://elandcloudapp.github.io/link${path}${query}`;
+    const androidURL =
+      `intent://${path}${query}` +
+      `#Intent;scheme=elandcloud;package=${androidPackage};` +
+      `S.browser_fallback_url=${encodeURIComponent(fallbackURL)};end`;
 
-    // Detect Android
-    const isAndroid = /Android/i.test(navigator.userAgent);
+    // OS detection
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
 
-    // Redirect
-    window.location.href = isAndroid ? androidURL : iosURL;
+    let os = "Unknown";
+    let targetURL = fallbackURL;
 
-    // Fallback for devices that do not handle the deeplink
+    if (/android/i.test(ua)) {
+      os = "Android";
+      targetURL = androidURL;
+    } else if (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) {
+      os = "iOS";
+      targetURL = iosURL;
+    } else {
+      os = "Other (Desktop / Unsupported)";
+      targetURL = fallbackURL;
+    }
+
+    // Show OS (debug / optional)
+    document.getElementById("osInfo").textContent = `Detected OS: ${os}`;
+
+    // Auto redirect (important: delayed for Chrome reliability)
+    setTimeout(() => {
+      window.location.href = targetURL;
+    }, 100);
+
+    // Hard fallback
     setTimeout(() => {
       window.location.href = fallbackURL;
-    }, 2500);
+    }, 3000);
+
+    // Manual button
+    document.getElementById("openBtn").addEventListener("click", () => {
+      window.location.href = targetURL;
+    });
   </script>
+
 </body>
 </html>
