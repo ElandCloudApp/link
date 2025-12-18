@@ -2,34 +2,76 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Redirecting…</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f2f2f2;
+      text-align: center;
+    }
+
+    p {
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Big button styling */
+    .deep-link-button {
+      background-color: #4CAF50;
+      color: white;
+      font-size: 5vw; /* responsive font size */
+      padding: 2rem 4rem;
+      border: none;
+      border-radius: 1rem;
+      cursor: pointer;
+      text-decoration: none;
+      min-width: 200px;
+      min-height: 80px;
+      transition: background-color 0.2s;
+    }
+
+    .deep-link-button:hover {
+      background-color: #45a049;
+    }
+  </style>
 </head>
 <body>
   <p>Redirecting…</p>
+  <button class="deep-link-button" id="manualButton">Open ElandCloud App</button>
+
   <script>
-    // Get the full path after "/link"
+    // Get the path and query from URL
     const path = window.location.pathname.replace(/^\/link/, "");
     const query = window.location.search;
 
-    // iOS deeplink
+    // URLs
     const iosURL = `elandcloud://${path}${query}`;
-
-    // Android intent URL
-    // Replace "com.yourcompany.yourapp" with your actual Android package name
     const androidPackage = "com.elandgames.elandcloud";
-    const fallbackURL = `https://elandcloudapp.github.io/link${path}${query}`; // Web fallback
+    const fallbackURL = `https://elandcloudapp.github.io/link${path}${query}`;
     const androidURL = `intent://${path}${query}#Intent;scheme=elandcloud;package=${androidPackage};S.browser_fallback_url=${encodeURIComponent(fallbackURL)};end`;
 
-    // Detect Android
     const isAndroid = /Android/i.test(navigator.userAgent);
 
-    // Redirect
+    // Automatic redirect
     window.location.href = isAndroid ? androidURL : iosURL;
 
-    // Fallback for devices that do not handle the deeplink
+    // Fallback after 2.5 seconds
     setTimeout(() => {
       window.location.href = fallbackURL;
     }, 2500);
+
+    // Manual button click
+    document.getElementById("manualButton").addEventListener("click", () => {
+      window.location.href = isAndroid ? androidURL : iosURL;
+    });
   </script>
 </body>
 </html>
