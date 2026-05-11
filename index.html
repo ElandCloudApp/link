@@ -30,9 +30,7 @@
       border-radius: 1rem;
     }
 
-    .deep-link:hover {
-      background: #45a049;
-    }
+    .deep-link:hover { background: #45a049; }
 
     .info {
       margin-top: 1rem;
@@ -44,18 +42,16 @@
 <body>
 
   <p>Open ElandCloud App</p>
-
   <a id="deepLink" class="deep-link" href="#">Open App</a>
-
   <div class="info" id="info"></div>
 
   <script>
     // Strip leading "/link/" so path = "open/{encrypted_id}" (no leading slash)
-    const path = window.location.pathname.replace(/^\/link\//, "");
+    const path  = window.location.pathname.replace(/^\/link\//, "");
     const query = window.location.search;
 
-    const iosURL     = `elandcloud://${path}${query}`;
-    const fallbackURL = `https://elandcloudapp.github.io/link/${path}${query}`;
+    // Custom scheme URL works for both iOS and sideloaded Android
+    const customURL = `elandcloud://${path}${query}`;
 
     const ua        = navigator.userAgent;
     const isAndroid = /Android/i.test(ua);
@@ -65,26 +61,24 @@
     const deepLink = document.getElementById("deepLink");
 
     if (isAndroid) {
-      info.textContent = "Detected Android";
+      info.textContent = "Detected Android — tap the button to open";
 
-      deepLink.href =
-        `intent://${path}${query}` +
-        `#Intent;scheme=elandcloud;` +
-        `package=com.elandgames.elandcloud;` +
-        `S.browser_fallback_url=${encodeURIComponent(fallbackURL)};end`;
+      // Use custom scheme directly: Android OS resolves this to the installed app
+      // via its registered intent filter, bypassing Chrome's package visibility check.
+      deepLink.href = customURL;
 
     } else if (isIOS) {
       info.textContent = "Detected iOS";
 
-      deepLink.href = iosURL;
+      deepLink.href = customURL;
 
       setTimeout(() => {
-        window.location.href = iosURL;
+        window.location.href = customURL;
       }, 100);
 
     } else {
       info.textContent = "Desktop / Unsupported";
-      deepLink.href = fallbackURL;
+      deepLink.href = "#";
     }
   </script>
 
