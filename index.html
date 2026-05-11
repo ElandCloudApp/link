@@ -45,36 +45,30 @@
 
   <p>Open ElandCloud App</p>
 
-  <!-- ✅ Android intent anchor -->
-  <a
-    id="androidLink"
-    class="deep-link"
-    href="intent://open/s7#Intent;scheme=elandcloud;package=com.elandgames.elandcloud;end">
-    Open App
-  </a>
+  <a id="deepLink" class="deep-link" href="#">Open App</a>
 
   <div class="info" id="info"></div>
 
   <script>
-    const path = window.location.pathname.replace(/^\/link/, "");
+    // Strip leading "/link/" so path = "open/{encrypted_id}" (no leading slash)
+    const path = window.location.pathname.replace(/^\/link\//, "");
     const query = window.location.search;
 
-    const iosURL = `elandcloud://${path}${query}`;
-    const fallbackURL = `https://elandcloudapp.github.io/link${path}${query}`;
+    const iosURL     = `elandcloud://${path}${query}`;
+    const fallbackURL = `https://elandcloudapp.github.io/link/${path}${query}`;
 
-    const ua = navigator.userAgent;
+    const ua        = navigator.userAgent;
     const isAndroid = /Android/i.test(ua);
-    const isIOS = /iPhone|iPad|iPod/i.test(ua);
+    const isIOS     = /iPhone|iPad|iPod/i.test(ua);
 
-    const info = document.getElementById("info");
-    const androidLink = document.getElementById("androidLink");
+    const info     = document.getElementById("info");
+    const deepLink = document.getElementById("deepLink");
 
     if (isAndroid) {
       info.textContent = "Detected Android";
 
-      // Update intent dynamically (safe)
-      androidLink.href =
-        `intent://${path}` +
+      deepLink.href =
+        `intent://${path}${query}` +
         `#Intent;scheme=elandcloud;` +
         `package=com.elandgames.elandcloud;` +
         `S.browser_fallback_url=${encodeURIComponent(fallbackURL)};end`;
@@ -82,16 +76,15 @@
     } else if (isIOS) {
       info.textContent = "Detected iOS";
 
-      androidLink.href = iosURL;
+      deepLink.href = iosURL;
 
-      // iOS auto-redirect allowed
       setTimeout(() => {
         window.location.href = iosURL;
       }, 100);
 
     } else {
       info.textContent = "Desktop / Unsupported";
-      androidLink.href = fallbackURL;
+      deepLink.href = fallbackURL;
     }
   </script>
 
